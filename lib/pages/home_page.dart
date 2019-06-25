@@ -1,31 +1,189 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_widgets/pages/hello_listview.dart';
+import 'package:flutter_widgets/pages/hello_page1.dart';
+import 'package:flutter_widgets/pages/hello_page2.dart';
+import 'package:flutter_widgets/pages/hello_page3.dart';
+import 'package:flutter_widgets/utils/nav.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Hello Flutter",
-          ),
-          centerTitle: true,
+      appBar: AppBar(
+        title: Text(
+          "Hello Flutter",
         ),
-        body: _body());
+        centerTitle: true,
+      ),
+      body: _bodyWithContext(context),
+    );
   }
 
   _body() {
     return Container(
       color: Colors.white,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           _text(),
-          _imgFromAsset(),
-          _button(),
+          _pageView(),
+          _buttons(),
         ],
       ),
     );
   }
 
+  _bodyWithContext(context) {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          _text(),
+          _pageView(),
+          _buttonsWithContextFunction(context),
+        ],
+      ),
+    );
+  }
+
+  _bodyWithPadding() {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          _text(),
+          _pageView(),
+          _buttons(),
+        ],
+      ),
+    );
+  }
+
+  _bodyWithSingleChildScrollView() {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _text(),
+            _pageView(),
+            _buttons(),
+            _text(),
+            _pageView(),
+            _buttons(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _pageView() {
+    return Container(
+      height: 300,
+      child: PageView(
+        children: <Widget>[
+          _imgFromAssetWithParameter("assets/images/dog1.png"),
+          _imgFromAssetWithParameter("assets/images/dog2.png"),
+          _imgFromAssetWithParameter("assets/images/dog3.png"),
+          _imgFromAssetWithParameter("assets/images/dog4.png"),
+          _imgFromAssetWithParameter("assets/images/dog5.png"),
+        ],
+      ),
+    );
+  }
+
+  _buttons() {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _buttonWithParameterText("ListView"),
+            _buttonWithParameterText("Page 2"),
+            _buttonWithParameterText("Page 3"),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _buttonWithParameterText("Snack"),
+            _buttonWithParameterText("Dialog"),
+            _buttonWithParameterText("Toast"),
+          ],
+        ),
+      ],
+    );
+  }
+
+  _buttonsWithContext(context) {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _buttonWithParameterTextWithContext(context, "ListView"),
+            _buttonWithParameterTextWithContext(context, "Page 2"),
+            _buttonWithParameterTextWithContext(context, "Page 3"),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _buttonWithParameterTextWithContext(context, "Snack"),
+            _buttonWithParameterTextWithContext(context, "Dialog"),
+            _buttonWithParameterTextWithContext(context, "Toast"),
+          ],
+        ),
+      ],
+    );
+  }
+
+  _buttonsWithContextFunction(context) {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _buttonWithParameterTextWithContextFunction(context, "ListView",
+                () => _onClickNavigator(context, HelloListView())),
+            _buttonWithParameterTextWithContextFunction(context, "Page 2",
+                () => _onClickNavigator(context, HelloPage2())),
+            _buttonWithParameterTextWithContextFunction(context, "Page 3",
+                () => _onClickNavigator(context, HelloPage3())),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _buttonWithParameterTextWithContextFunction(
+                context, "Snack", _onClickSnack()),
+            _buttonWithParameterTextWithContextFunction(
+                context, "Dialog", _onClickDialog()),
+            _buttonWithParameterTextWithContextFunction(
+                context, "Toast", _onClickToast()),
+          ],
+        ),
+      ],
+    );
+  }
+
+  _onClickNavigator(context, Widget page) async {
+    print("Button with context pressed");
+    String valueReturned = await push(context, page);
+
+    print(" Value returnet $valueReturned");
+  }
+
+  _onClickSnack() {}
+
+  _onClickDialog() {}
+
+  _onClickToast() {}
   _row() {
     return Row(
       children: <Widget>[
@@ -168,8 +326,60 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  _buttonWithParameterText(String text) {
+    return Center(
+      child: RaisedButton(
+        color: Colors.blue,
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: () => _onClickOk(),
+      ),
+    );
+  }
+
+  _buttonWithParameterTextWithContext(context, String text) {
+    return Center(
+      child: RaisedButton(
+        color: Colors.blue,
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: () => _onClickOkWithContext(context),
+      ),
+    );
+  }
+
+  _buttonWithParameterTextWithContextFunction(
+      context, String text, Function onPressed) {
+    return Center(
+      child: RaisedButton(
+        color: Colors.blue,
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: () => onPressed(),
+      ),
+    );
+  }
+
   _onClickOk() {
     print("Button pressed");
+  }
+
+  _onClickOkWithContext(context) {
+    print("Button with context pressed");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return HelloPage1();
+        },
+      ),
+    );
   }
 
   _imgFromNetwork() {
@@ -182,6 +392,13 @@ class HomePage extends StatelessWidget {
   _imgFromAsset() {
     return Center(
       child: Image.asset("assets/images/dog1.png"),
+    );
+  }
+
+  _imgFromAssetWithParameter(String img) {
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Image.asset(img, fit: BoxFit.cover),
     );
   }
 
