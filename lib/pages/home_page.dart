@@ -19,6 +19,25 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  _bodyExpanded() {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: _pageView(),
+            flex: 6,
+          ),
+          Expanded(
+            child: _pageView(),
+            flex: 4,
+          ),
+        ],
+      ),
+    );
+  }
+
   _body() {
     return Container(
       color: Colors.white,
