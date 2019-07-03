@@ -5,6 +5,9 @@ import 'package:flutter_widgets/pages/hello_page2.dart';
 import 'package:flutter_widgets/pages/hello_page3.dart';
 import 'package:flutter_widgets/utils/nav.dart';
 
+
+import 'package:fluttertoast/fluttertoast.dart';
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -60,7 +63,7 @@ class HomePage extends StatelessWidget {
         children: <Widget>[
           _text(),
           _pageView(),
-          _buttonsWithContextFunction(context),
+          _buttonsWithContextBuilderFunction(),
         ],
       ),
     );
@@ -191,6 +194,39 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  _buttonsWithContextBuilderFunction() {
+    return Builder(
+      builder: (context) {
+        return Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _buttonWithParameterTextWithContextFunction(context, "ListView",
+                    () => _onClickNavigator(context, HelloListView())),
+                _buttonWithParameterTextWithContextFunction(context, "Page 2",
+                    () => _onClickNavigator(context, HelloPage2())),
+                _buttonWithParameterTextWithContextFunction(context, "Page 3",
+                    () => _onClickNavigator(context, HelloPage3())),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _buttonWithParameterTextWithContextFunction(
+                    context, "Snack", () => _onClickSnackContext(context)),
+                _buttonWithParameterTextWithContextFunction(
+                    context, "Dialog", () => _onClickDialogContext(context)),
+                _buttonWithParameterTextWithContextFunction(
+                    context, "Toast", () => _onClickToast()),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   _onClickNavigator(context, Widget page) async {
     print("Button with context pressed");
     String valueReturned = await push(context, page);
@@ -199,10 +235,65 @@ class HomePage extends StatelessWidget {
   }
 
   _onClickSnack() {}
+  _onClickSnackContext(context) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Hello Snack Flutter",
+        ),
+        action: SnackBarAction(
+          textColor: Colors.yellow,
+          label: "Ok",
+          onPressed: () {
+            print("Ok");
+          },
+        ),
+      ),
+    );
+  }
 
   _onClickDialog() {}
 
-  _onClickToast() {}
+  _onClickDialogContext(BuildContext context) {
+    showDialog(
+        barrierDismissible: false, //dont close dialog when click outside
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              title: Text("Hello Dialog Flutter"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    print("Ok pressed");
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  _onClickToast() {
+    Fluttertoast.showToast(
+        msg: "This is Center Short Toast",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  }
   _row() {
     return Row(
       children: <Widget>[
